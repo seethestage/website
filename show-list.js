@@ -289,8 +289,8 @@ locationSearch.addEventListener('keyup', function() {
 // BOOKMARKS SCRIPT
 //Initial load of bookmarked shows
 document.addEventListener('DOMContentLoaded', (event) => {
-    // Function to process shows
-    const processShows = () => {
+    // Renamed function to process bookmarked shows
+    const processBookmarkedShows = () => {
         const bookmarkedShowsText = document.getElementById('bookmarked-shows').textContent;
         const showValues = bookmarkedShowsText.match(/\[(.*?)\]/g).map(val => val.slice(1, -1));
 
@@ -314,14 +314,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
     };
 
     // Run once at the start
-    processShows();
+    processBookmarkedShows();
 
-    // Event listener for clicking the 'load-more-shows-btn'
-    document.getElementById('load-more-shows-btn').addEventListener('click', processShows);
-// Event listener for clicking on any div with class 'dropdown-link'
-document.querySelectorAll('.dropdown-link').forEach(function(element) {
-    element.addEventListener('click', processShows);
-});
+    // Update event listeners to use the new function name
+    document.getElementById('load-more-shows-btn').addEventListener('click', processBookmarkedShows);
+    document.querySelectorAll('.dropdown-link').forEach(function(element) {
+        element.addEventListener('click', processBookmarkedShows);
+    });
 
     // MutationObserver to watch for changes in elements with class 'tag'
     const observer = new MutationObserver((mutations) => {
@@ -402,8 +401,8 @@ function handleBookmarkSelected(clickedDiv) {
 // STARRED SCRIPT
 //Initial load of starred shows
 document.addEventListener('DOMContentLoaded', (event) => {
-    // Function to process shows
-    const processShows = () => {
+    // Renamed function to process starred shows
+    const processStarredShows = () => {
         const starredShowsText = document.getElementById('starred-shows').textContent;
         const showValues = starredShowsText.match(/\[(.*?)\]/g).map(val => val.slice(1, -1));
 
@@ -427,16 +426,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
     };
 
     // Run once at the start
-    processShows();
+    processStarredShows();
 
-    // Event listener for clicking the 'load-more-shows-btn'
-    document.getElementById('load-more-shows-btn').addEventListener('click', processShows);
-
-// Event listener for clicking on any div with class 'dropdown-link'
-document.querySelectorAll('.dropdown-link').forEach(function(element) {
-    element.addEventListener('click', processShows);
-});
-
+    // Update event listeners to use the new function name
+    document.getElementById('load-more-shows-btn').addEventListener('click', processStarredShows);
+    document.querySelectorAll('.dropdown-link').forEach(function(element) {
+        element.addEventListener('click', processStarredShows);
+    });
+  
     // MutationObserver to watch for changes in elements with class 'tag'
     const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
