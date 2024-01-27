@@ -1,8 +1,8 @@
-// BOOKMARKS SCRIPT
-//Initial load of bookmarked shows
+// BOOKMARKED SCRIPT
+// Initial load of bookmarked shows
 document.addEventListener('DOMContentLoaded', (event) => {
-    // Function to process shows
-    const processShows = () => {
+    // Function to process bookmarked shows
+    const processBookmarkedShows = () => {
         const bookmarkedShowsText = document.getElementById('bookmarked-shows').textContent;
         const showValues = bookmarkedShowsText.match(/\[(.*?)\]/g).map(val => val.slice(1, -1));
 
@@ -26,14 +26,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
     };
 
     // Run once at the start
-    processShows();
+    processBookmarkedShows();
 
     // Event listener for clicking the 'load-more-shows-btn'
-    document.getElementById('load-more-shows-btn').addEventListener('click', processShows);
-// Event listener for clicking on any div with class 'dropdown-link'
-document.querySelectorAll('.dropdown-link').forEach(function(element) {
-    element.addEventListener('click', processShows);
-});
+    document.getElementById('load-more-shows-btn').addEventListener('click', processBookmarkedShows);
+    // Event listener for clicking on any div with class 'dropdown-link'
+    document.querySelectorAll('.dropdown-link').forEach(function(element) {
+        element.addEventListener('click', processBookmarkedShows);
+    });
 
     // MutationObserver to watch for changes in elements with class 'tag'
     const observer = new MutationObserver((mutations) => {
@@ -44,7 +44,7 @@ document.querySelectorAll('.dropdown-link').forEach(function(element) {
                 const hasTagClass = nodes.some(node => node.classList && node.classList.contains('tag'));
 
                 if (hasTagClass) {
-                    processShows();
+                    processBookmarkedShows();
                 }
             }
         });
@@ -53,6 +53,7 @@ document.querySelectorAll('.dropdown-link').forEach(function(element) {
     // Observe the document body for addition or removal of 'tag' elements
     observer.observe(document.body, { childList: true, subtree: true });
 });
+
 document.addEventListener('DOMContentLoaded', function() {
     document.body.addEventListener('click', function(event) {
         if (event.target.classList.contains('bookmark-unselected')) {
