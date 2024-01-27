@@ -286,10 +286,10 @@ locationSearch.addEventListener('keyup', function() {
 
 
 
-// BOOKMARKS SCRIPT
-//Initial load of bookmarked shows
+// BOOKMARKED SCRIPT
+// Initial load of bookmarked shows
 document.addEventListener('DOMContentLoaded', (event) => {
-    // Renamed function to process bookmarked shows
+    // Function to process bookmarked shows
     const processBookmarkedShows = () => {
         const bookmarkedShowsText = document.getElementById('bookmarked-shows').textContent;
         const showValues = bookmarkedShowsText.match(/\[(.*?)\]/g).map(val => val.slice(1, -1));
@@ -316,8 +316,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // Run once at the start
     processBookmarkedShows();
 
-    // Update event listeners to use the new function name
+    // Event listener for clicking the 'load-more-shows-btn'
     document.getElementById('load-more-shows-btn').addEventListener('click', processBookmarkedShows);
+    // Event listener for clicking on any div with class 'dropdown-link'
     document.querySelectorAll('.dropdown-link').forEach(function(element) {
         element.addEventListener('click', processBookmarkedShows);
     });
@@ -331,7 +332,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 const hasTagClass = nodes.some(node => node.classList && node.classList.contains('tag'));
 
                 if (hasTagClass) {
-                    processShows();
+                    processBookmarkedShows();
                 }
             }
         });
@@ -340,6 +341,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // Observe the document body for addition or removal of 'tag' elements
     observer.observe(document.body, { childList: true, subtree: true });
 });
+
 document.addEventListener('DOMContentLoaded', function() {
     document.body.addEventListener('click', function(event) {
         if (event.target.classList.contains('bookmark-unselected')) {
@@ -397,11 +399,10 @@ function handleBookmarkSelected(clickedDiv) {
 
 
 
-
 // STARRED SCRIPT
-//Initial load of starred shows
+// Initial load of starred shows
 document.addEventListener('DOMContentLoaded', (event) => {
-    // Renamed function to process starred shows
+    // Function to process starred shows
     const processStarredShows = () => {
         const starredShowsText = document.getElementById('starred-shows').textContent;
         const showValues = starredShowsText.match(/\[(.*?)\]/g).map(val => val.slice(1, -1));
@@ -428,12 +429,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // Run once at the start
     processStarredShows();
 
-    // Update event listeners to use the new function name
+    // Event listener for clicking the 'load-more-shows-btn'
     document.getElementById('load-more-shows-btn').addEventListener('click', processStarredShows);
+    // Event listener for clicking on any div with class 'dropdown-link'
     document.querySelectorAll('.dropdown-link').forEach(function(element) {
         element.addEventListener('click', processStarredShows);
     });
-  
+
     // MutationObserver to watch for changes in elements with class 'tag'
     const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
@@ -443,7 +445,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 const hasTagClass = nodes.some(node => node.classList && node.classList.contains('tag'));
 
                 if (hasTagClass) {
-                    processShows();
+                    processStarredShows();
                 }
             }
         });
@@ -452,6 +454,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // Observe the document body for addition or removal of 'tag' elements
     observer.observe(document.body, { childList: true, subtree: true });
 });
+
 document.addEventListener('DOMContentLoaded', function() {
     document.body.addEventListener('click', function(event) {
         if (event.target.classList.contains('starred-unselected')) {
@@ -504,5 +507,6 @@ function handleStarredSelected(clickedDiv) {
     const updateBtn = document.getElementById('update-starred-btn');
     updateBtn.click();
 }
+
 
 
