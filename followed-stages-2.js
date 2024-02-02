@@ -75,16 +75,23 @@
     });
 
     document.addEventListener('DOMContentLoaded', function() {
-        document.body.addEventListener('click', function(event) {
-            if (event.target.classList.contains('stage-unselected')) {
-                console.log("Clicked 'stage-unselected'");
-                handleStageUnselected(event.target);
-            } else if (event.target.classList.contains('stage-selected')) {
-                console.log("Clicked 'stage-selected'");
-                handleStageSelected(event.target);
+    document.body.addEventListener('click', function(event) {
+        // Use event.target.closest(selector) to find the nearest ancestor that matches the selector
+        // or the target itself if it matches the selector
+        let target = event.target.closest('.stage-unselected');
+        if (target) {
+            console.log("Clicked inside 'stage-unselected'");
+            handleStageUnselected(target);
+        } else {
+            target = event.target.closest('.stage-selected');
+            if (target) {
+                console.log("Clicked inside 'stage-selected'");
+                handleStageSelected(target);
             }
-        });
+        }
     });
+});
+
 
     function handleStageUnselected(clickedDiv) {
         console.log("Handling 'stage-unselected'");
