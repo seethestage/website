@@ -64,15 +64,27 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 document.addEventListener('DOMContentLoaded', function() {
     document.body.addEventListener('click', function(event) {
-        if (event.target.classList.contains('bookmark-unselected')) {
-            // Handling for bookmark-unselected
-            handleBookmarkUnselected(event.target);
-        } else if (event.target.classList.contains('bookmark-selected')) {
-            // Handling for bookmark-selected
-            handleBookmarkSelected(event.target);
+        // Use event.target.closest(selector) to find the nearest ancestor that matches the selector
+        // or the target itself if it matches the selector
+        let target = event.target.closest('.bookmark-unselected');
+        if (target) {
+            console.log("Clicked inside 'bookmark-unselected'");
+            handleBookmarkUnselected(target);
+        } else {
+            target = event.target.closest('.bookmark-selected');
+            if (target) {
+                console.log("Clicked inside 'bookmark-selected'");
+                handleBookmarkSelected(target);
+            }
         }
     });
 });
+
+
+
+
+
+
 
 function handleBookmarkUnselected(clickedDiv) {
     // Find and display the sibling with class 'bookmark-selected'
