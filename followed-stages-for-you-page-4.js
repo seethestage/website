@@ -2,7 +2,6 @@
     const processFollowedStages = () => {
     console.log("Running processFollowedStages");
 
-    // Check and update 'followed-stages' if empty
     const followedStagesField = document.getElementById('followed-stages');
     if (followedStagesField.textContent.trim() === '') {
         followedStagesField.textContent = '[EMPTY]';
@@ -17,37 +16,31 @@
         return;
     }
 
-    // Remove all existing checkbox divs except for the template
+    // Clear existing checkboxes except the template
     Array.from(container.querySelectorAll('.checkbox')).forEach(div => {
         if (div.id !== 'stage-checkbox-template') {
             div.remove();
         }
     });
 
-    // Assuming the checkbox-template exists
     const template = document.getElementById('stage-checkbox-template');
     if (!template) {
         console.error('Template not found.');
         return;
     }
 
-    // Update the template with the first stageValue or "empty" if no stageValues
-    const firstTextElement = template.querySelector('.small-text'); // Corrected class selector to '.small-text'
-    if (firstTextElement) {
-        firstTextElement.textContent = stageValues.length > 0 ? stageValues[0] : 'empty';
-    } else {
-        console.error('Text element not found within the template.');
-        return;
-    }
+    // Ensure the template is not directly visible if it should only be used as a cloning basis
+    // template.style.display = 'none'; // Uncomment if the template should be hidden
 
-    // For subsequent stageValues, clone the template, update, and append
-    stageValues.slice(1).forEach(stageValue => {
-        const clone = template.cloneNode(true); // true for deep clone
+    // Process each stageValue, clone and update from the template
+    stageValues.forEach((stageValue, index) => {
+        // Clone the template for each stageValue, including the first one
+        const clone = template.cloneNode(true);
+        clone.removeAttribute('id'); // Remove the ID to avoid duplicates
 
-        // Remove the ID from the clone to avoid duplicate IDs
-        clone.removeAttribute('id');
+        // Show the clone if it's the first item and meant to be visible
+        // if (index === 0) clone.style.display = 'block'; // Adjust based on your visibility logic
 
-        // Find the child div with class 'small-text' and update its text content
         const textElement = clone.querySelector('.small-text');
         if (textElement) {
             textElement.textContent = stageValue;
@@ -57,9 +50,12 @@
         }
 
         // Append the cloned and updated element to the container
-        container.appendChild(clone);
+        // Skip appending the first clone if it's identical to the template and should not be displayed
+        if (!(index === 0 && template === clone)) {
+            container.appendChild(clone);
+        }
     });
-    }
+};
 
       
         setTimeout(() => {
