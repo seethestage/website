@@ -44,18 +44,19 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // MutationObserver to watch for changes in elements with class 'tag'
         const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.type === 'childList' && mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0) {
-                    const nodes = [...mutation.addedNodes, ...mutation.removedNodes];
-                    const hasTagClass = nodes.some(node => node.classList && node.classList.contains('tag'));
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'childList' && (mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0)) {
+                const nodes = [...mutation.addedNodes, ...mutation.removedNodes];
+                const hasTagClass = nodes.some(node => node.classList && node.classList.contains('tag'));
+                const hasRowClass = nodes.some(node => node.classList && node.classList.contains('row'));
 
-                    if (hasTagClass) {
-                        console.log("Mutation detected with 'tag' class");
-                        setTimeout(processStarredShows, 500);
-                    }
+                if (hasTagClass || hasRowClass) {
+                    console.log(`Mutation detected with '${hasTagClass ? 'tag' : 'row'}' class`);
+                    setTimeout(processStarredShows, 500);
                 }
-            });
+            }
         });
+    });
 
         observer.observe(document.body, { childList: true, subtree: true });
     });
