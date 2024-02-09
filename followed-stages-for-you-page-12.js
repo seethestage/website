@@ -1,26 +1,8 @@
 // Function to process followed stages
-    document.addEventListener('DOMContentLoaded', () => {
-    const masterCheckbox = document.getElementById('followed-stages-checkbox');
-
-    // Function to apply the master checkbox state to all checkboxes
-    const applyMasterCheckboxState = () => {
-        const checkboxes = document.querySelectorAll('#followed-stages-group .checkbox .check');
-        const masterChecked = masterCheckbox.checked;
-        checkboxes.forEach((checkbox) => {
-            const needClick = (masterChecked && !checkbox.checked) || (!masterChecked && checkbox.checked);
-            if (needClick) {
-                checkbox.checked = masterChecked; // Adjust if your checkboxes are not standard input elements
-                checkbox.dispatchEvent(new Event('change', { bubbles: true }));
-                // If checkboxes are not `<input>` elements but divs that require a click to change state, simulate a click event instead
-                // checkbox.click();
-            }
-        });
-    };
-
-    // Function to process followed stages
     const processFollowedStages = () => {
         console.log("Running processFollowedStages");
 
+        // Check and update 'followed-stages' if empty
         const followedStagesField = document.getElementById('followed-stages');
         if (followedStagesField.textContent.trim() === '') {
             followedStagesField.textContent = '[EMPTY]';
@@ -28,76 +10,81 @@
 
         const followedStagesText = followedStagesField.textContent;
         const stageValues = followedStagesText.match(/\[(.*?)\]/g)?.map(val => val.slice(1, -1)) || [];
-        const container = document.getElementById('followed-stages-group');
 
-        if (!container) {
-            console.error('Container not found.');
+
+const container = document.getElementById('followed-stages-group');
+
+    if (!container) {
+        console.error('Container not found.');
+        return;
+    }
+
+// Remove all divs inside the 'followed-stages-group' except the 'stages-checkbox-template'
+Array.from(container.children).forEach(child => {
+    if (child.id !== 'stages-checkbox-template') {
+        container.removeChild(child);
+    }
+});
+
+        
+    // Assuming there is at least one stageValues and the checkbox-template exists
+    if (stageValues.length > 0) {
+        const template = document.getElementById('stages-checkbox-template');
+        if (!template) {
+            console.error('Template not found.');
+            return;
+        }
+        // Update the first 'checkbox-template' with the first 'stageValues'
+        const firstTextElement = template.querySelector('.small-txt');
+        if (firstTextElement) {
+            firstTextElement.textContent = stageValues[0];
+        } else {
+            console.error('Text element not found within the template.');
             return;
         }
 
-        // Remove all divs inside the 'followed-stages-group' except the 'stages-checkbox-template'
-        Array.from(container.children).forEach(child => {
-            if (child.id !== 'stages-checkbox-template') {
-                container.removeChild(child);
-            }
-        });
+        // For subsequent stageValues, clone the template, update, and append
+        stageValues.slice(1).forEach(stageValues => {
+            const clone = template.cloneNode(true); // true for deep clone
 
-        if (stageValues.length > 0) {
-            const template = document.getElementById('stages-checkbox-template');
-            if (!template) {
-                console.error('Template not found.');
+            // Remove the ID from the clone to avoid duplicate IDs
+            clone.removeAttribute('id');
+
+            // Find the child div with class 'small-txt' and update its text content
+            const textElement = clone.querySelector('.small-txt');
+            if (textElement) {
+                textElement.textContent = stageValues;
+            } else {
+                console.error('Text element not found within the clone.');
                 return;
             }
 
-            stageValues.forEach((stageValue, index) => {
-                let clone;
-                if (index === 0) {
-                    // Update the first 'checkbox-template' directly for the first 'stageValue'
-                    clone = template;
-                } else {
-                    // For subsequent 'stageValues', clone the template, update, and append
-                    clone = template.cloneNode(true); // true for deep clone
-                    clone.removeAttribute('id'); // Remove the ID from the clone to avoid duplicate IDs
-                    container.appendChild(clone);
-                }
+            // Append the cloned and updated element to the container
+            container.appendChild(clone);
+        });
+    }
 
-                // Find the child div with class 'small-txt' and update its text content
-                const textElement = clone.querySelector('.small-txt');
-                if (textElement) {
-                    textElement.textContent = stageValue;
-                } else {
-                    console.error('Text element not found within the clone.');
-                    return;
-                }
-            });
-        }
-
+      
         setTimeout(() => {
-            document.querySelectorAll('.stage-id').forEach(div => {
+            const stageIdTextDivs = document.querySelectorAll('.stage-id');
+
+            stageIdTextDivs.forEach(div => {
                 let sibling = div.nextElementSibling;
                 while (sibling) {
                     if (sibling.classList.contains('stage-selected')) {
-                        sibling.style.display = stageValues.includes(div.textContent.trim()) ? 'block' : 'none';
+                        if (stageValues.includes(div.textContent.trim())) {
+                            sibling.style.display = 'block';
+                        } else {
+                            sibling.style.display = 'none';
+                        }
                         console.log("Updated display for:", sibling);
                         break;
                     }
                     sibling = sibling.nextElementSibling;
                 }
             });
-
-            // Re-apply master checkbox state after updates
-            applyMasterCheckboxState();
         }, 100);
     };
-
-    // Optionally: Call `processFollowedStages` initially or bind it to some event to run
-    // For example, this could be triggered after fetching new stage data
-    // processFollowedStages();
-
-    // Bind the master checkbox's change event to reapply states immediately
-    masterCheckbox.addEventListener('change', applyMasterCheckboxState);
-});
-
 
     // FOLLOWED STAGES SCRIPT
     // Initial load of followed stages
