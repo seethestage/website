@@ -51,6 +51,26 @@ const processFollowedStages = () => {
         container.appendChild(clone);
     });
 
+    // Dynamically reload the CMS Filter script
+    const reloadCmsFilterScript = () => {
+        // Remove existing script tag if it exists
+        const existingScript = document.querySelector('script[src="https://cdn.jsdelivr.net/npm/@finsweet/attributes-cmsfilter@1/cmsfilter.js"]');
+        if (existingScript) {
+            existingScript.remove();
+        }
+
+        // Create a new script element
+        const script = document.createElement('script');
+        script.src = "https://cdn.jsdelivr.net/npm/@finsweet/attributes-cmsfilter@1/cmsfilter.js";
+        script.async = true;
+
+        // Append the new script to the head to load and execute
+        document.head.appendChild(script);
+    };
+
+    // Call reloadCmsFilterScript just before the setTimeout
+    reloadCmsFilterScript();
+
     setTimeout(() => {
         const stageIdTextDivs = document.querySelectorAll('.stage-id');
         stageIdTextDivs.forEach(div => {
@@ -66,6 +86,7 @@ const processFollowedStages = () => {
         });
     }, 100);
 };
+
 
 
     // FOLLOWED STAGES SCRIPT
