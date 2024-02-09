@@ -1,4 +1,3 @@
-// Function to process followed stages
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded and parsed");
 
