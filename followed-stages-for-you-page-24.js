@@ -1,88 +1,48 @@
 // Function to process followed stages
-const processFollowedStages = () => {
-    console.log("Running processFollowedStages");
+    const processFollowedStages = () => {
+        console.log("Running processFollowedStages");
 
-    // Check and update 'followed-stages' if empty
-    const followedStagesField = document.getElementById('followed-stages');
-    if (followedStagesField.textContent.trim() === '') {
-        followedStagesField.textContent = '[EMPTY]';
-    }
-
-    const followedStagesText = followedStagesField.textContent;
-    const stageValues = followedStagesText.match(/\[(.*?)\]/g)?.map(val => val.slice(1, -1)) || [];
-
-    const container = document.getElementById('followed-stages-group');
-    if (!container) {
-        console.error('Container not found.');
-        return;
-    }
-
-    // Remove all divs inside the 'followed-stages-group' except the 'stages-checkbox-template'
-    Array.from(container.children).forEach(child => {
-        if (child.id !== 'stages-checkbox-template') {
-            container.removeChild(child);
+        // Check and update 'followed-stages' if empty
+        const followedStagesField = document.getElementById('followed-stages');
+        if (followedStagesField.textContent.trim() === '') {
+            followedStagesField.textContent = '[EMPTY]';
         }
-    });
 
-    // Ensure the checkbox-template exists
-    const template = document.getElementById('stages-checkbox-template');
-    if (!template) {
-        console.error('Template not found.');
-        return;
-    }
+        const followedStagesText = followedStagesField.textContent;
+        const stageValues = followedStagesText.match(/\[(.*?)\]/g)?.map(val => val.slice(1, -1)) || [];
 
-    // For each stageValue, clone the template, update, and append
-    stageValues.forEach(stageValue => {
-        const clone = template.cloneNode(true); // true for deep clone
-        clone.removeAttribute('id'); // Remove the ID from the clone to avoid duplicate IDs
-        const textElement = clone.querySelector('.small-txt');
-        if (textElement) {
-            textElement.textContent = stageValue; // Update text content
-        } else {
-            console.error('Text element not found within the clone.');
-            return;
-        }
-        container.appendChild(clone); // Append the cloned and updated element to the container
-    });
+        setTimeout(() => {
+            const stageIdTextDivs = document.querySelectorAll('.stage-id');
 
-    // Dynamically reload the CMS Filter script
-    reloadCmsFilterScript();
-
-    setTimeout(() => {
-        const stageIdTextDivs = document.querySelectorAll('.stage-id');
-        stageIdTextDivs.forEach(div => {
-            let sibling = div.nextElementSibling;
-            while (sibling) {
-                if (sibling.classList.contains('stage-selected')) {
-                    sibling.style.display = stageValues.includes(div.textContent.trim()) ? 'block' : 'none';
-                    console.log("Updated display for:", sibling);
-                    break;
+            stageIdTextDivs.forEach(div => {
+                let sibling = div.nextElementSibling;
+                while (sibling) {
+                    if (sibling.classList.contains('stage-selected')) {
+                        if (stageValues.includes(div.textContent.trim())) {
+                            sibling.style.display = 'block';
+                        } else {
+                            sibling.style.display = 'none';
+                        }
+                        console.log("Updated display for:", sibling);
+                        break;
+                    }
+                    sibling = sibling.nextElementSibling;
                 }
-                sibling = sibling.nextElementSibling;
-            }
-        });
-    }, 100);
-};
+            });
+        }, 100);
+    };
 
-// Function to dynamically reload the CMS Filter script
-const reloadCmsFilterScript = () => {
-    const scriptSrc = "https://cdn.jsdelivr.net/npm/@finsweet/attributes-cmsfilter@1/cmsfilter.js";
-    const existingScript = document.querySelector(`script[src="${scriptSrc}"]`);
-    if (existingScript) {
-        existingScript.remove();
-    }
-    const script = document.createElement('script');
-    script.src = scriptSrc;
-    script.async = true;
-    document.head.appendChild(script);
-};
+    // FOLLOWED STAGES SCRIPT
+    // Initial load of followed stages
+    document.addEventListener('DOMContentLoaded', (event) => {
+        console.log("DOM fully loaded and parsed");
 
-// Event listeners and other functionalities
-document.addEventListener('DOMContentLoaded', (event) => {
-    console.log("DOM fully loaded and parsed");
-    processFollowedStages();
+        console.log("processFollowedStages function defined");
 
-        // Event listener for clicking the 'load-more-btn'
+        // Run once at the start
+        processFollowedStages();
+
+        // Event listener for clicking the 'load-more-shows-btn'
         document.getElementById('load-more-button').addEventListener('click', () => {
             console.log("Clicked 'load-more-button'");
             setTimeout(processFollowedStages, 500);
