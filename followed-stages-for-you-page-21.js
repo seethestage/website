@@ -53,18 +53,6 @@ const processFollowedStages = () => {
 
     // Function to dynamically reload the CMS Filter script
 const reloadCmsFilterScript = () => {
-    // Temporarily disable elements not matching 'fs-cmsfilter-field="stage-id"'
-    // and also ensure not to disable the CMS list div
-    document.querySelectorAll('[fs-cmsfilter-field]').forEach(el => {
-        if (el.getAttribute('fs-cmsfilter-field') !== 'stage-id' && !el.hasAttribute('fs-cmsfilter-element')) {
-            el.setAttribute('data-fs-cmsfilter-temp-disable', 'true');
-            el.style.display = 'none'; // Optionally hide them
-        }
-    });
-
-    // Specifically exclude elements with 'fs-cmsfilter-element="list"' from any manipulation
-    // Therefore, no code is needed to specifically handle them here as we are not disabling or hiding them
-
     // Remove the existing script tag if it exists
     const existingScript = document.querySelector('script[src="https://cdn.jsdelivr.net/npm/@finsweet/attributes-cmsfilter@1/cmsfilter.js"]');
     if (existingScript) {
@@ -78,15 +66,33 @@ const reloadCmsFilterScript = () => {
 
     // Append the new script to the head to load and execute
     document.head.appendChild(script);
-
-    // Re-enable or unhide elements after a slight delay to allow script initialization
-    setTimeout(() => {
-        document.querySelectorAll('[data-fs-cmsfilter-temp-disable="true"]').forEach(el => {
-            el.removeAttribute('data-fs-cmsfilter-temp-disable');
-            el.style.display = ''; // Restore display property
-        });
-    }, 100); // Adjust this delay as necessary based on script load time
 };
+
+// Adjust the processFollowedStages function to call this refined script reload logic
+const processFollowedStages = () => {
+    console.log("Running processFollowedStages");
+
+    // Your existing logic for handling followed stages goes here...
+
+    // Call the function to reload the CMS Filter script just before the setTimeout
+    reloadCmsFilterScript();
+
+    setTimeout(() => {
+        const stageIdTextDivs = document.querySelectorAll('.stage-id');
+        stageIdTextDivs.forEach(div => {
+            let sibling = div.nextElementSibling;
+            while (sibling) {
+                if (sibling.classList.contains('stage-selected')) {
+                    sibling.style.display = stageValues.includes(div.textContent.trim()) ? 'block' : 'none';
+                    console.log("Updated display for:", sibling);
+                    break;
+                }
+                sibling = sibling.nextElementSibling;
+            }
+        });
+    }, 100);
+};
+
 
 
     // Call the function to reload the CMS Filter script just before the setTimeout
