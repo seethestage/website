@@ -1,10 +1,23 @@
 // Function to process followed stages
+    const processFollowedStages = () => {
+        console.log("Running processFollowedStages");
+
+        // Check and update 'followed-stages' if empty
+        const followedStagesField = document.getElementById('followed-stages');
+        if (followedStagesField.textContent.trim() === '') {
+            followedStagesField.textContent = '[EMPTY]';
+        }
+
+        const followedStagesText = followedStagesField.textContent;
+        const stageValues = followedStagesText.match(/\[(.*?)\]/g)?.map(val => val.slice(1, -1)) || [];
+
+
 const container = document.getElementById('followed-stages-group');
 
-if (!container) {
-    console.error('Container not found.');
-    return;
-}
+    if (!container) {
+        console.error('Container not found.');
+        return;
+    }
 
 // Remove all divs inside the 'followed-stages-group' except the 'stages-checkbox-template'
 Array.from(container.children).forEach(child => {
@@ -13,43 +26,43 @@ Array.from(container.children).forEach(child => {
     }
 });
 
-// Assuming there is at least one stageValues and the checkbox-template exists
-if (stageValues.length > 0) {
-    const template = document.getElementById('stages-checkbox-template');
-    if (!template) {
-        console.error('Template not found.');
-        return;
-    }
-    // Update the first 'checkbox-template' with the first 'stageValues'
-    const firstTextElement = template.querySelector('.small-txt');
-    if (firstTextElement) {
-        firstTextElement.textContent = stageValues[0];
-    } else {
-        console.error('Text element not found within the template.');
-        return;
-    }
-
-    // For subsequent stageValues, clone the template, update, and append
-    stageValues.slice(1).forEach(stageValue => {
-        const clone = template.cloneNode(true); // true for deep clone
-
-        // Remove the ID from the clone to avoid duplicate IDs
-        clone.removeAttribute('id');
-
-        // Find the child div with class 'small-txt' and update its text content
-        const textElement = clone.querySelector('.small-txt');
-        if (textElement) {
-            textElement.textContent = stageValue;
+        
+    // Assuming there is at least one stageValues and the checkbox-template exists
+    if (stageValues.length > 0) {
+        const template = document.getElementById('stages-checkbox-template');
+        if (!template) {
+            console.error('Template not found.');
+            return;
+        }
+        // Update the first 'checkbox-template' with the first 'stageValues'
+        const firstTextElement = template.querySelector('.small-txt');
+        if (firstTextElement) {
+            firstTextElement.textContent = stageValues[0];
         } else {
-            console.error('Text element not found within the clone.');
+            console.error('Text element not found within the template.');
             return;
         }
 
-        // Append the cloned and updated element to the container
-        container.appendChild(clone);
-    });
-}
+        // For subsequent stageValues, clone the template, update, and append
+        stageValues.slice(1).forEach(stageValues => {
+            const clone = template.cloneNode(true); // true for deep clone
 
+            // Remove the ID from the clone to avoid duplicate IDs
+            clone.removeAttribute('id');
+
+            // Find the child div with class 'small-txt' and update its text content
+            const textElement = clone.querySelector('.small-txt');
+            if (textElement) {
+                textElement.textContent = stageValues;
+            } else {
+                console.error('Text element not found within the clone.');
+                return;
+            }
+
+            // Append the cloned and updated element to the container
+            container.appendChild(clone);
+        });
+    }
 
       
         setTimeout(() => {
