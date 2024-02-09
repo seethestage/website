@@ -1,61 +1,60 @@
 // Function to process followed stages
     const processFollowedStages = () => {
-    console.log("Running processFollowedStages");
+        console.log("Running processFollowedStages");
 
-    const followedStagesField = document.getElementById('followed-stages');
-    if (followedStagesField.textContent.trim() === '') {
-        followedStagesField.textContent = '[EMPTY]';
-    }
+        // Check and update 'followed-stages' if empty
+        const followedStagesField = document.getElementById('followed-stages');
+        if (followedStagesField.textContent.trim() === '') {
+            followedStagesField.textContent = '[EMPTY]';
+        }
 
-    const followedStagesText = followedStagesField.textContent;
-    const stageValues = followedStagesText.match(/\[(.*?)\]/g)?.map(val => val.slice(1, -1)) || [];
+        const followedStagesText = followedStagesField.textContent;
+        const stageValues = followedStagesText.match(/\[(.*?)\]/g)?.map(val => val.slice(1, -1)) || [];
 
-    const container = document.getElementById('followed-stages-group');
+
+const container = document.getElementById('followed-stages-group');
+
     if (!container) {
         console.error('Container not found.');
         return;
     }
 
-    // Clear existing checkboxes except the template
-    Array.from(container.querySelectorAll('.checkbox')).forEach(div => {
-        if (div.id !== 'stage-checkbox-template') {
-            div.remove();
+    // Assuming there is at least one stageValues and the checkbox-template exists
+    if (stageValues.length > 0) {
+        const template = document.getElementById('stages-checkbox-template');
+        if (!template) {
+            console.error('Template not found.');
+            return;
         }
-    });
-
-    const template = document.getElementById('stage-checkbox-template');
-    if (!template) {
-        console.error('Template not found.');
-        return;
-    }
-
-    // Ensure the template is not directly visible if it should only be used as a cloning basis
-    // template.style.display = 'none'; // Uncomment if the template should be hidden
-
-    // Process each stageValue, clone and update from the template
-    stageValues.forEach((stageValue, index) => {
-        // Clone the template for each stageValue, including the first one
-        const clone = template.cloneNode(true);
-        clone.removeAttribute('id'); // Remove the ID to avoid duplicates
-
-        // Show the clone if it's the first item and meant to be visible
-        // if (index === 0) clone.style.display = 'block'; // Adjust based on your visibility logic
-
-        const textElement = clone.querySelector('.small-text');
-        if (textElement) {
-            textElement.textContent = stageValue;
+        // Update the first 'checkbox-template' with the first 'stageValues'
+        const firstTextElement = template.querySelector('.small-txt');
+        if (firstTextElement) {
+            firstTextElement.textContent = stageValues[0];
         } else {
-            console.error('Text element not found within the clone.');
+            console.error('Text element not found within the template.');
             return;
         }
 
-        // Append the cloned and updated element to the container
-        // Skip appending the first clone if it's identical to the template and should not be displayed
-        if (!(index === 0 && template === clone)) {
+        // For subsequent stageValues, clone the template, update, and append
+        stageValues.slice(1).forEach(stageValues => {
+            const clone = template.cloneNode(true); // true for deep clone
+
+            // Remove the ID from the clone to avoid duplicate IDs
+            clone.removeAttribute('id');
+
+            // Find the child div with class 'small-txt' and update its text content
+            const textElement = clone.querySelector('.small-txt');
+            if (textElement) {
+                textElement.textContent = stageValues;
+            } else {
+                console.error('Text element not found within the clone.');
+                return;
+            }
+
+            // Append the cloned and updated element to the container
             container.appendChild(clone);
-        }
-    });
-};
+        });
+    }
 
       
         setTimeout(() => {
