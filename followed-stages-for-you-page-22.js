@@ -34,135 +34,84 @@ const processFollowedStages = () => {
     // For each stageValue, clone the template, update, and append
     stageValues.forEach(stageValue => {
         const clone = template.cloneNode(true); // true for deep clone
-
-        // Remove the ID from the clone to avoid duplicate IDs
-        clone.removeAttribute('id');
-
-        // Find the child div with class 'small-txt' and update its text content
+        clone.removeAttribute('id'); // Remove the ID from the clone to avoid duplicate IDs
         const textElement = clone.querySelector('.small-txt');
         if (textElement) {
-            textElement.textContent = stageValue;
+            textElement.textContent = stageValue; // Update text content
         } else {
             console.error('Text element not found within the clone.');
             return;
         }
-
-        // Append the cloned and updated element to the container
-        container.appendChild(clone);
+        container.appendChild(clone); // Append the cloned and updated element to the container
     });
 
-    // Function to dynamically reload the CMS Filter script
+    // Dynamically reload the CMS Filter script
+    reloadCmsFilterScript();
+
+    setTimeout(() => {
+        const stageIdTextDivs = document.querySelectorAll('.stage-id');
+        stageIdTextDivs.forEach(div => {
+            let sibling = div.nextElementSibling;
+            while (sibling) {
+                if (sibling.classList.contains('stage-selected')) {
+                    sibling.style.display = stageValues.includes(div.textContent.trim()) ? 'block' : 'none';
+                    console.log("Updated display for:", sibling);
+                    break;
+                }
+                sibling = sibling.nextElementSibling;
+            }
+        });
+    }, 100);
+};
+
+// Function to dynamically reload the CMS Filter script
 const reloadCmsFilterScript = () => {
-    // Remove the existing script tag if it exists
-    const existingScript = document.querySelector('script[src="https://cdn.jsdelivr.net/npm/@finsweet/attributes-cmsfilter@1/cmsfilter.js"]');
+    const scriptSrc = "https://cdn.jsdelivr.net/npm/@finsweet/attributes-cmsfilter@1/cmsfilter.js";
+    const existingScript = document.querySelector(`script[src="${scriptSrc}"]`);
     if (existingScript) {
         existingScript.remove();
     }
-
-    // Create a new script element
     const script = document.createElement('script');
-    script.src = "https://cdn.jsdelivr.net/npm/@finsweet/attributes-cmsfilter@1/cmsfilter.js";
+    script.src = scriptSrc;
     script.async = true;
-
-    // Append the new script to the head to load and execute
     document.head.appendChild(script);
 };
 
-// Adjust the processFollowedStages function to call this refined script reload logic
-const processFollowedStages = () => {
-    console.log("Running processFollowedStages");
+// Function definitions (processFollowedStages, reloadCmsFilterScript, handleStageUnselected, handleStageSelected) remain the same...
 
-    // Your existing logic for handling followed stages goes here...
+// Consolidated DOMContentLoaded event listener
+document.addEventListener('DOMContentLoaded', (event) => {
+    console.log("DOM fully loaded and parsed");
+    processFollowedStages();
 
-    // Call the function to reload the CMS Filter script just before the setTimeout
-    reloadCmsFilterScript();
-
-    setTimeout(() => {
-        const stageIdTextDivs = document.querySelectorAll('.stage-id');
-        stageIdTextDivs.forEach(div => {
-            let sibling = div.nextElementSibling;
-            while (sibling) {
-                if (sibling.classList.contains('stage-selected')) {
-                    sibling.style.display = stageValues.includes(div.textContent.trim()) ? 'block' : 'none';
-                    console.log("Updated display for:", sibling);
-                    break;
-                }
-                sibling = sibling.nextElementSibling;
-            }
-        });
-    }, 100);
-};
-
-
-
-    // Call the function to reload the CMS Filter script just before the setTimeout
-    reloadCmsFilterScript();
-
-    setTimeout(() => {
-        const stageIdTextDivs = document.querySelectorAll('.stage-id');
-        stageIdTextDivs.forEach(div => {
-            let sibling = div.nextElementSibling;
-            while (sibling) {
-                if (sibling.classList.contains('stage-selected')) {
-                    sibling.style.display = stageValues.includes(div.textContent.trim()) ? 'block' : 'none';
-                    console.log("Updated display for:", sibling);
-                    break;
-                }
-                sibling = sibling.nextElementSibling;
-            }
-        });
-    }, 100);
-};
-
-
-
-
-    // FOLLOWED STAGES SCRIPT
-    // Initial load of followed stages
-    document.addEventListener('DOMContentLoaded', (event) => {
-        console.log("DOM fully loaded and parsed");
-
-        console.log("processFollowedStages function defined");
-
-        // Run once at the start
-        processFollowedStages();
-
-        // Event listener for clicking the 'load-more-btn'
-        document.getElementById('load-more-button').addEventListener('click', () => {
-            console.log("Clicked 'load-more-button'");
-            setTimeout(processFollowedStages, 500);
-        });
-
-        // Event listener for clicking on any div with class 'dropdown-link'
-        document.querySelectorAll('.dropdown-link').forEach(function(element) {
-            element.addEventListener('click', () => {
-                console.log("Clicked 'dropdown-link'");
-                setTimeout(processFollowedStages, 500);
-            });
-        });
-
-        // MutationObserver to watch for changes in elements with class 'tag'
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.type === 'childList' && mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0) {
-                    const nodes = [...mutation.addedNodes, ...mutation.removedNodes];
-                    const hasTagClass = nodes.some(node => node.classList && node.classList.contains('tag'));
-
-                    if (hasTagClass) {
-                        console.log("Mutation detected with 'tag' class");
-                        setTimeout(processFollowedStages, 500);
-                    }
-                }
-            });
-        });
-
-        observer.observe(document.body, { childList: true, subtree: true });
+    document.getElementById('load-more-button').addEventListener('click', () => {
+        console.log("Clicked 'load-more-button'");
+        setTimeout(processFollowedStages, 500);
     });
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.dropdown-link').forEach(function(element) {
+        element.addEventListener('click', () => {
+            console.log("Clicked 'dropdown-link'");
+            setTimeout(processFollowedStages, 500);
+        });
+    });
+
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'childList' && (mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0)) {
+                const nodes = [...mutation.addedNodes, ...mutation.removedNodes];
+                const hasTagClass = nodes.some(node => node.classList && node.classList.contains('tag'));
+                if (hasTagClass) {
+                    console.log("Mutation detected with 'tag' class");
+                    setTimeout(processFollowedStages, 500);
+                }
+            }
+        });
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
     document.body.addEventListener('click', function(event) {
-        // Use event.target.closest(selector) to find the nearest ancestor that matches the selector
-        // or the target itself if it matches the selector
         let target = event.target.closest('.stage-unselected');
         if (target) {
             console.log("Clicked inside 'stage-unselected'");
