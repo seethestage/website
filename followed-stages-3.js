@@ -34,45 +34,47 @@
 
     // FOLLOWED STAGES SCRIPT
     // Initial load of followed stages
-    document.addEventListener('DOMContentLoaded', (event) => {
-        console.log("DOM fully loaded and parsed");
+document.addEventListener('DOMContentLoaded', (event) => {
+    console.log("DOM fully loaded and parsed");
 
-        console.log("processFollowedStages function defined");
+    console.log("processFollowedStages function defined");
 
-        // Run once at the start
-        processFollowedStages();
+    // Run once at the start
+    processFollowedStages();
 
-        // Event listener for clicking the 'load-more-shows-btn'
-        document.getElementById('load-more-button').addEventListener('click', () => {
-            console.log("Clicked 'load-more-button'");
+    // Event listener for clicking the 'load-more-shows-btn'
+    document.getElementById('load-more-button').addEventListener('click', () => {
+        console.log("Clicked 'load-more-button'");
+        setTimeout(processFollowedStages, 500);
+    });
+
+    // Event listener for clicking on any div with class 'dropdown-link'
+    document.querySelectorAll('.dropdown-link').forEach(function(element) {
+        element.addEventListener('click', () => {
+            console.log("Clicked 'dropdown-link'");
             setTimeout(processFollowedStages, 500);
         });
-
-        // Event listener for clicking on any div with class 'dropdown-link'
-        document.querySelectorAll('.dropdown-link').forEach(function(element) {
-            element.addEventListener('click', () => {
-                console.log("Clicked 'dropdown-link'");
-                setTimeout(processFollowedStages, 500);
-            });
-        });
-
-        // MutationObserver to watch for changes in elements with class 'tag'
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.type === 'childList' && mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0) {
-                    const nodes = [...mutation.addedNodes, ...mutation.removedNodes];
-                    const hasTagClass = nodes.some(node => node.classList && node.classList.contains('tag'));
-
-                    if (hasTagClass) {
-                        console.log("Mutation detected with 'tag' class");
-                        setTimeout(processFollowedStages, 500);
-                    }
-                }
-            });
-        });
-
-        observer.observe(document.body, { childList: true, subtree: true });
     });
+
+    // MutationObserver to watch for changes in elements with class 'tag'
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'childList' && (mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0)) {
+                const nodes = [...mutation.addedNodes, ...mutation.removedNodes];
+                const hasTagClass = nodes.some(node => node.classList && node.classList.contains('tag'));
+                const hasRowClass = nodes.some(node => node.classList && node.classList.contains('row'));
+
+                if (hasTagClass || hasRowClass) {
+                    console.log(`Mutation detected with '${hasTagClass ? 'tag' : 'row'}' class`);
+                    setTimeout(processFollowedStages, 500);
+                }
+            }
+        });
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+});
+
 
     document.addEventListener('DOMContentLoaded', function() {
     document.body.addEventListener('click', function(event) {
