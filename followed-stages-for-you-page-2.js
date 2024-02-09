@@ -2,7 +2,6 @@
     const processFollowedStages = () => {
     console.log("Running processFollowedStages");
 
-    // Check and update 'followed-stages' if empty
     const followedStagesField = document.getElementById('followed-stages');
     if (followedStagesField.textContent.trim() === '') {
         followedStagesField.textContent = '[EMPTY]';
@@ -17,48 +16,48 @@
         return;
     }
 
-    // Remove any checkboxes that are not part of the current stageValues
-    const existingCheckboxes = container.querySelectorAll('.small-txt');
-    existingCheckboxes.forEach(checkbox => {
-        const checkboxValue = checkbox.textContent;
-        if (!stageValues.includes(checkboxValue)) {
-            checkbox.parentNode.remove(); // Assuming .small-txt is a direct child of the element to be removed
+    const template = document.getElementById('stages-checkbox-template');
+    if (!template) {
+        console.error('Template not found.');
+        return;
+    }
+
+    // Remove any checkboxes that are not part of the current stageValues, but keep the template intact
+    const checkboxes = container.querySelectorAll('.checkbox-container:not(#stages-checkbox-template)');
+    checkboxes.forEach(checkbox => {
+        const checkboxText = checkbox.querySelector('.small-txt')?.textContent;
+        if (!stageValues.includes(checkboxText)) {
+            checkbox.remove();
         }
     });
 
-    // Assuming there is at least one stageValues and the checkbox-template exists
-    if (stageValues.length > 0) {
-        const template = document.getElementById('stages-checkbox-template');
-        if (!template) {
-            console.error('Template not found.');
-            return;
+    // If stageValues is empty, set the template's small-txt to blank and do not proceed further
+    if (stageValues.length === 0) {
+        const firstTextElement = template.querySelector('.small-txt');
+        if (firstTextElement) {
+            firstTextElement.textContent = ''; // Reset to blank if no stageValues
         }
-
-        stageValues.forEach(stageValue => {
-            // Check if checkbox for this stageValue already exists
-            let exists = Array.from(existingCheckboxes).some(checkbox => checkbox.textContent === stageValue);
-            
-            if (!exists) {
-                // If it does not exist, clone the template, update, and append
-                const clone = template.content.cloneNode(true); // true for deep clone
-
-                // Remove the ID from the clone to avoid duplicate IDs
-                clone.querySelector('.stages-checkbox-template').removeAttribute('id');
-
-                // Find the child div with class 'small-txt' and update its text content
-                const textElement = clone.querySelector('.small-txt');
-                if (textElement) {
-                    textElement.textContent = stageValue;
-                } else {
-                    console.error('Text element not found within the clone.');
-                    return;
-                }
-
-                // Append the cloned and updated element to the container
-                container.appendChild(clone);
-            }
-        });
+        return; // Exit the function to avoid further processing
     }
+
+    // Process each stageValue to update or create a checkbox
+    stageValues.forEach(stageValue => {
+        // Avoid duplicating the template's work; check existing ones
+        let exists = Array.from(container.querySelectorAll('.small-txt')).some(text => text.textContent === stageValue);
+
+        if (!exists) {
+            const clone = template.cloneNode(true); // true for deep clone
+            clone.removeAttribute('id'); // Remove the ID to avoid duplicates
+
+            const textElement = clone.querySelector('.small-txt');
+            if (textElement) {
+                textElement.textContent = stageValue;
+                container.appendChild(clone); // Append the cloned and updated element to the container
+            } else {
+                console.error('Text element not found within the clone.');
+            }
+        }
+    });
 
       
         setTimeout(() => {
