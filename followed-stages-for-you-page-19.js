@@ -50,7 +50,43 @@ const processFollowedStages = () => {
         // Append the cloned and updated element to the container
         container.appendChild(clone);
     });
-    
+
+    // Function to dynamically reload the CMS Filter script
+    const reloadCmsFilterScript = () => {
+        // Temporarily disable elements not matching 'fs-cmsfilter-field="stage-id"'
+        document.querySelectorAll('[fs-cmsfilter-field]').forEach(el => {
+            if (el.getAttribute('fs-cmsfilter-field') !== 'stage-id') {
+                el.setAttribute('data-fs-cmsfilter-temp-disable', 'true');
+                el.style.display = 'none'; // Optionally hide them
+            }
+        });
+
+        // Remove the existing script tag if it exists
+        const existingScript = document.querySelector('script[src="https://cdn.jsdelivr.net/npm/@finsweet/attributes-cmsfilter@1/cmsfilter.js"]');
+        if (existingScript) {
+            existingScript.remove();
+        }
+
+        // Create a new script element
+        const script = document.createElement('script');
+        script.src = "https://cdn.jsdelivr.net/npm/@finsweet/attributes-cmsfilter@1/cmsfilter.js";
+        script.async = true;
+
+        // Append the new script to the head to load and execute
+        document.head.appendChild(script);
+
+        // Re-enable or unhide elements after a slight delay to allow script initialization
+        setTimeout(() => {
+            document.querySelectorAll('[data-fs-cmsfilter-temp-disable="true"]').forEach(el => {
+                el.removeAttribute('data-fs-cmsfilter-temp-disable');
+                el.style.display = ''; // Restore display property
+            });
+        }, 100); // Adjust this delay as necessary based on script load time
+    };
+
+    // Call the function to reload the CMS Filter script just before the setTimeout
+    reloadCmsFilterScript();
+
     setTimeout(() => {
         const stageIdTextDivs = document.querySelectorAll('.stage-id');
         stageIdTextDivs.forEach(div => {
@@ -66,6 +102,7 @@ const processFollowedStages = () => {
         });
     }, 100);
 };
+
 
 
 
