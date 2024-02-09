@@ -50,12 +50,7 @@ const processFollowedStages = () => {
         // Append the cloned and updated element to the container
         container.appendChild(clone);
     });
-
-    };
-
-    // Call reloadCmsFilterScript just before the setTimeout
-    reloadCmsFilterScript();
-
+    
     setTimeout(() => {
         const stageIdTextDivs = document.querySelectorAll('.stage-id');
         stageIdTextDivs.forEach(div => {
