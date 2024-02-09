@@ -52,37 +52,42 @@ const processFollowedStages = () => {
     });
 
     // Function to dynamically reload the CMS Filter script
-    const reloadCmsFilterScript = () => {
-        // Temporarily disable elements not matching 'fs-cmsfilter-field="stage-id"'
-        document.querySelectorAll('[fs-cmsfilter-field]').forEach(el => {
-            if (el.getAttribute('fs-cmsfilter-field') !== 'stage-id') {
-                el.setAttribute('data-fs-cmsfilter-temp-disable', 'true');
-                el.style.display = 'none'; // Optionally hide them
-            }
-        });
-
-        // Remove the existing script tag if it exists
-        const existingScript = document.querySelector('script[src="https://cdn.jsdelivr.net/npm/@finsweet/attributes-cmsfilter@1/cmsfilter.js"]');
-        if (existingScript) {
-            existingScript.remove();
+const reloadCmsFilterScript = () => {
+    // Temporarily disable elements not matching 'fs-cmsfilter-field="stage-id"'
+    // and also ensure not to disable the CMS list div
+    document.querySelectorAll('[fs-cmsfilter-field]').forEach(el => {
+        if (el.getAttribute('fs-cmsfilter-field') !== 'stage-id' && !el.hasAttribute('fs-cmsfilter-element')) {
+            el.setAttribute('data-fs-cmsfilter-temp-disable', 'true');
+            el.style.display = 'none'; // Optionally hide them
         }
+    });
 
-        // Create a new script element
-        const script = document.createElement('script');
-        script.src = "https://cdn.jsdelivr.net/npm/@finsweet/attributes-cmsfilter@1/cmsfilter.js";
-        script.async = true;
+    // Specifically exclude elements with 'fs-cmsfilter-element="list"' from any manipulation
+    // Therefore, no code is needed to specifically handle them here as we are not disabling or hiding them
 
-        // Append the new script to the head to load and execute
-        document.head.appendChild(script);
+    // Remove the existing script tag if it exists
+    const existingScript = document.querySelector('script[src="https://cdn.jsdelivr.net/npm/@finsweet/attributes-cmsfilter@1/cmsfilter.js"]');
+    if (existingScript) {
+        existingScript.remove();
+    }
 
-        // Re-enable or unhide elements after a slight delay to allow script initialization
-        setTimeout(() => {
-            document.querySelectorAll('[data-fs-cmsfilter-temp-disable="true"]').forEach(el => {
-                el.removeAttribute('data-fs-cmsfilter-temp-disable');
-                el.style.display = ''; // Restore display property
-            });
-        }, 100); // Adjust this delay as necessary based on script load time
-    };
+    // Create a new script element
+    const script = document.createElement('script');
+    script.src = "https://cdn.jsdelivr.net/npm/@finsweet/attributes-cmsfilter@1/cmsfilter.js";
+    script.async = true;
+
+    // Append the new script to the head to load and execute
+    document.head.appendChild(script);
+
+    // Re-enable or unhide elements after a slight delay to allow script initialization
+    setTimeout(() => {
+        document.querySelectorAll('[data-fs-cmsfilter-temp-disable="true"]').forEach(el => {
+            el.removeAttribute('data-fs-cmsfilter-temp-disable');
+            el.style.display = ''; // Restore display property
+        });
+    }, 100); // Adjust this delay as necessary based on script load time
+};
+
 
     // Call the function to reload the CMS Filter script just before the setTimeout
     reloadCmsFilterScript();
