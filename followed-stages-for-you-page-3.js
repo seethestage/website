@@ -2,6 +2,7 @@
     const processFollowedStages = () => {
     console.log("Running processFollowedStages");
 
+    // Check and update 'followed-stages' if empty
     const followedStagesField = document.getElementById('followed-stages');
     if (followedStagesField.textContent.trim() === '') {
         followedStagesField.textContent = '[EMPTY]';
@@ -16,48 +17,49 @@
         return;
     }
 
-    const template = document.getElementById('stages-checkbox-template');
+    // Remove all existing checkbox divs except for the template
+    Array.from(container.querySelectorAll('.checkbox')).forEach(div => {
+        if (div.id !== 'stage-checkbox-template') {
+            div.remove();
+        }
+    });
+
+    // Assuming the checkbox-template exists
+    const template = document.getElementById('stage-checkbox-template');
     if (!template) {
         console.error('Template not found.');
         return;
     }
 
-    // Remove any checkboxes that are not part of the current stageValues, but keep the template intact
-    const checkboxes = container.querySelectorAll('.checkbox-container:not(#stages-checkbox-template)');
-    checkboxes.forEach(checkbox => {
-        const checkboxText = checkbox.querySelector('.small-txt')?.textContent;
-        if (!stageValues.includes(checkboxText)) {
-            checkbox.remove();
-        }
-    });
-
-    // If stageValues is empty, set the template's small-txt to blank and do not proceed further
-    if (stageValues.length === 0) {
-        const firstTextElement = template.querySelector('.small-txt');
-        if (firstTextElement) {
-            firstTextElement.textContent = ''; // Reset to blank if no stageValues
-        }
-        return; // Exit the function to avoid further processing
+    // Update the template with the first stageValue or "empty" if no stageValues
+    const firstTextElement = template.querySelector('.small-text'); // Corrected class selector to '.small-text'
+    if (firstTextElement) {
+        firstTextElement.textContent = stageValues.length > 0 ? stageValues[0] : 'empty';
+    } else {
+        console.error('Text element not found within the template.');
+        return;
     }
 
-    // Process each stageValue to update or create a checkbox
-    stageValues.forEach(stageValue => {
-        // Avoid duplicating the template's work; check existing ones
-        let exists = Array.from(container.querySelectorAll('.small-txt')).some(text => text.textContent === stageValue);
+    // For subsequent stageValues, clone the template, update, and append
+    stageValues.slice(1).forEach(stageValue => {
+        const clone = template.cloneNode(true); // true for deep clone
 
-        if (!exists) {
-            const clone = template.cloneNode(true); // true for deep clone
-            clone.removeAttribute('id'); // Remove the ID to avoid duplicates
+        // Remove the ID from the clone to avoid duplicate IDs
+        clone.removeAttribute('id');
 
-            const textElement = clone.querySelector('.small-txt');
-            if (textElement) {
-                textElement.textContent = stageValue;
-                container.appendChild(clone); // Append the cloned and updated element to the container
-            } else {
-                console.error('Text element not found within the clone.');
-            }
+        // Find the child div with class 'small-text' and update its text content
+        const textElement = clone.querySelector('.small-text');
+        if (textElement) {
+            textElement.textContent = stageValue;
+        } else {
+            console.error('Text element not found within the clone.');
+            return;
         }
+
+        // Append the cloned and updated element to the container
+        container.appendChild(clone);
     });
+    }
 
       
         setTimeout(() => {
