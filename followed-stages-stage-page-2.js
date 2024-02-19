@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // Run once at the start
     processFollowedStages();
 
-    // Event listener for clicking the 'load-more-shows-btn'
+    // Event listener for clicking the 'load-more-btn'
     document.getElementById('load-more-button').addEventListener('click', () => {
         console.log("Clicked 'load-more-button'");
         setTimeout(processFollowedStages, 500);
@@ -77,16 +77,23 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 
     document.addEventListener('DOMContentLoaded', function() {
-        document.body.addEventListener('click', function(event) {
-            if (event.target.classList.contains('stage-unselected')) {
-                console.log("Clicked 'stage-unselected'");
-                handleStageUnselected(event.target);
-            } else if (event.target.classList.contains('stage-selected')) {
-                console.log("Clicked 'stage-selected'");
-                handleStageSelected(event.target);
+    document.body.addEventListener('click', function(event) {
+        // Use event.target.closest(selector) to find the nearest ancestor that matches the selector
+        // or the target itself if it matches the selector
+        let target = event.target.closest('.stage-unselected');
+        if (target) {
+            console.log("Clicked inside 'stage-unselected'");
+            handleStageUnselected(target);
+        } else {
+            target = event.target.closest('.stage-selected');
+            if (target) {
+                console.log("Clicked inside 'stage-selected'");
+                handleStageSelected(target);
             }
-        });
+        }
     });
+});
+
 
     function handleStageUnselected(clickedDiv) {
         console.log("Handling 'stage-unselected'");
@@ -107,6 +114,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         // Simulate click on the 'update-stages-btn'
         const updateBtn = document.getElementById('update-stages-btn');
         updateBtn.click();
+        
         
     }
 
@@ -131,5 +139,5 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const updateBtn = document.getElementById('update-stages-btn');
         updateBtn.click();
         
-    
+        
     }
