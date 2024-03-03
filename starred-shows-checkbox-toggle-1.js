@@ -1,9 +1,9 @@
-// Starred Shows Checkboxes Creation
+// Bookmarked Shows Checkboxes Creation
 document.addEventListener('DOMContentLoaded', (event) => {
-    const starredShowsText = document.getElementById('starred-shows').textContent;
-    const showValues = starredShowsText.match(/\[(.*?)\]/g).map(val => val.slice(1, -1));
+    const bookmarkedShowsText = document.getElementById('starred-shows').textContent;
+    const showValues = bookmarkedShowsText.match(/\[(.*?)\]/g).map(val => val.slice(1, -1));
 
-    const container = document.getElementById('starred-shows-group');
+    const container = document.getElementById('bookmarked-shows-group');
 
     if (!container) {
         console.error('Container not found.');
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // Assuming there is at least one showValue and the checkbox-template exists
     if (showValues.length > 0) {
-        const template = document.getElementById(‘starred-show-checkbox-template');
+        const template = document.getElementById('bookmarks-checkbox-template');
         if (!template) {
             console.error('Template not found.');
             return;
