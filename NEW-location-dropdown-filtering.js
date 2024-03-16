@@ -33,3 +33,16 @@ searchInput.addEventListener('input', function() {
     });
   });
 });
+
+// JavaScript code to scroll 'location-dropdown' to the top
+// when a user types in the 'location-search' input
+
+// First, get the elements by their IDs
+var locationSearch = document.getElementById('location-search');
+var locationDropdown = document.getElementById('location-dropdown');
+
+// Add an event listener for the 'keyup' event on the location search input
+locationSearch.addEventListener('keyup', function() {
+    // Scroll the location dropdown to the top
+    locationDropdown.scrollTop = 0;
+});
