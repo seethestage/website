@@ -38,23 +38,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // Run once at the start
     processStarredShows();
 
-    // Event listener for clicking the 'load-more-shows-btn'
-    document.getElementById('load-more-button').addEventListener('click', () => {
-        console.log("Clicked 'load-more-button'");
-        setTimeout(processStarredShows, 500);
-    });
-
-    // Event listener for clicking on any div with class 'dropdown-link'
-    document.querySelectorAll('.dropdown-link').forEach(function(element) {
-        element.addEventListener('click', () => {
-            console.log("Clicked 'dropdown-link'");
-            setTimeout(processStarredShows, 500);
-        });
-    });
+    
+    
 
 
-    observer.observe(document.body, { childList: true, subtree: true });
+
 });
+
 
 document.addEventListener('DOMContentLoaded', function() {
     document.body.addEventListener('click', function(event) {
