@@ -47,3 +47,29 @@ document.addEventListener('DOMContentLoaded', (event) => {
         });
     }
 });
+
+
+
+// Function to hide tag divs based on text content
+function hideTagDivsWithText() {
+    // Select all divs with class 'tag'
+    const tagDivs = document.querySelectorAll('.tag');
+
+    // Iterate over each tag div
+    tagDivs.forEach((div) => {
+        // Look for a child div with class 'small-txt'
+        const smallTxtDiv = div.querySelector('.small-txt');
+        if (smallTxtDiv) {
+            // Check if it contains the specified text
+            const textContent = smallTxtDiv.textContent;
+            if (textContent.includes('show-starred-id:')) {
+                // Hide the 'tag' div
+                div.style.display = 'none';
+            }
+        }
+    });
+}
+
+// Run the function once upon page load
+document.addEventListener('DOMContentLoaded', hideTagDivsWithText);
+
