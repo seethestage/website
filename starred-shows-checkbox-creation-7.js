@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const smallTxtDiv = div.querySelector('.small-txt');
         if (smallTxtDiv) {
             const textContent = smallTxtDiv.textContent;
-            if (textContent.includes('show-starred:') || textContent.includes('show-bookmark-id:')) {
+            if (textContent.includes('show-starred:') || textContent.includes('show-starred-id:')) {
                 div.style.display = 'none';
             }
         }
