@@ -47,3 +47,27 @@ document.addEventListener('DOMContentLoaded', (event) => {
         });
     }
 });
+
+
+// MutationObserver to watch for changes in elements with class 'tag' and hide tags that relate to the auto-starred-shows checkboxes
+const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+            mutation.addedNodes.forEach((node) => {
+                // Check if the added node is a 'tag' div
+                if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('tag')) {
+                    // Look for a child div with class 'small-txt'
+                    const smallTxtDiv = node.querySelector('.small-txt');
+                    if (smallTxtDiv) {
+                        // Check if it contains the specified text
+                        const textContent = smallTxtDiv.textContent;
+                        if (textContent.includes('stage-id:') || textContent.includes('show-starred-id:')) {
+                            // Hide the 'tag' div
+                            node.style.display = 'none';
+                        }
+                    }
+                }
+            });
+        }
+    });
+});
