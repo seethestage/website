@@ -7,13 +7,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const staticSumElement = document.getElementById('sum-static');
         const staticSum = parseInt(staticSumElement.innerText, 10);
 
-        // Check every half second to see if the value in "sum-dynamic" is equal or greater
+        // Check every half second to see if the value in "sum-total" is equal or greater
         const intervalId = setInterval(() => {
-            const dynamicSumElement = document.getElementById('sum-dynamic');
-            const dynamicSum = parseInt(dynamicSumElement.innerText, 10);
+            const totalSumElement = document.getElementById('sum-total');
+            const totalSum = parseInt(totalSumElement.innerText, 10);
 
-            if (dynamicSum >= staticSum) {
-                // If the dynamic sum is greater or equal, update display styles
+            if (totalSum >= staticSum) {
+                // If the total sum is greater or equal, update display styles
+                const dynamicSumElement = document.getElementById('sum-dynamic');
                 dynamicSumElement.style.display = 'flex';
                 staticSumElement.style.display = 'none';
 
@@ -23,3 +24,4 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 500);
     }, 1000);
 });
+
