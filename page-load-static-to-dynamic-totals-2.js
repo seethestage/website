@@ -6,14 +6,15 @@ document.addEventListener('DOMContentLoaded', function() {
         // Get the number from the inner text of the div with ID "sum-static"
         const staticSumElement = document.getElementById('sum-static');
         const staticSum = parseInt(staticSumElement.innerText, 10);
+        const comparisonThreshold = staticSum - 3;
 
-        // Check every half second to see if the value in "sum-total" is equal or greater
+        // Check every half second to see if the value in "sum-total" is equal or greater than staticSum - 3
         const intervalId = setInterval(() => {
             const totalSumElement = document.getElementById('sum-total');
             const totalSum = parseInt(totalSumElement.innerText, 10);
 
-            if (totalSum >= staticSum) {
-                // If the total sum is greater or equal, update display styles
+            if (totalSum >= comparisonThreshold) {
+                // If the total sum is greater or equal to staticSum - 3, update display styles
                 const dynamicSumElement = document.getElementById('sum-dynamic');
                 dynamicSumElement.style.display = 'flex';
                 staticSumElement.style.display = 'none';
@@ -24,4 +25,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 500);
     }, 1000);
 });
+
 
